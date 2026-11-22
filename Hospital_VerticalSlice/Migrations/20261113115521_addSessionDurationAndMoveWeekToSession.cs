@@ -1,0 +1,51 @@
+﻿using Microsoft.EntityFrameworkCore.Migrations;
+
+#nullable disable
+
+namespace Hospital_VerticalSlice.Migrations
+{
+    /// <inheritdoc />
+    public partial class addSessionDurationAndMoveWeekToSession : Migration
+    {
+        /// <inheritdoc />
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropColumn(
+                name: "Week",
+                table: "Sessions");
+
+            migrationBuilder.AddColumn<int>(
+                name: "SessionDuration",
+                table: "Schedules",
+                type: "int",
+                nullable: false,
+                defaultValue: 0);
+
+            migrationBuilder.AddColumn<int>(
+                name: "Week",
+                table: "Schedules",
+                type: "int",
+                nullable: false,
+                defaultValue: 0);
+        }
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropColumn(
+                name: "SessionDuration",
+                table: "Schedules");
+
+            migrationBuilder.DropColumn(
+                name: "Week",
+                table: "Schedules");
+
+            migrationBuilder.AddColumn<int>(
+                name: "Week",
+                table: "Sessions",
+                type: "int",
+                nullable: false,
+                defaultValue: 0);
+        }
+    }
+}

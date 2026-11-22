@@ -1,0 +1,6 @@
+@Hospital_VerticalSlice_HostAddress = http://localhost:5086
+
+GET {{Hospital_VerticalSlice_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
