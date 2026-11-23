@@ -1,9 +1,9 @@
 
 using FluentValidation;
-using Hospital_VerticalSlice.Entities.Enum;
-using Hospital_VerticalSlice.Infrastructure;
-using Hospital_VerticalSlice.Infrastructure.Behaviors;
-using Hospital_VerticalSlice.Infrastructure.Services;
+using School_VerticalSlice.Entities.Enum;
+using School_VerticalSlice.Infrastructure;
+using School_VerticalSlice.Infrastructure.Behaviors;
+using School_VerticalSlice.Infrastructure.Services;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 using System.Text;
 
-namespace Hospital_VerticalSlice
+namespace School_VerticalSlice
 {
     public class Program
     {
@@ -88,7 +88,7 @@ namespace Hospital_VerticalSlice
                 // التأكد من عدم وجود مسجّل بهذا البريد مسبقاً
                 if (!context.Users.Any(u => u.Email == "admin@school.com"))
                 {
-                    var adminUser = new Hospital_VerticalSlice.Entities.User // تأكد من مسار الـ Namespace الصحيح للـ User
+                    var adminUser = new School_VerticalSlice.Entities.User // تأكد من مسار الـ Namespace الصحيح للـ User
                     {
                         Name = "System Admin",
                         Email = "admin@school.com",

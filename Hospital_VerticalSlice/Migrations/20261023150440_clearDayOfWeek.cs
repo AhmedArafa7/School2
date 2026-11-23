@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Hospital_VerticalSlice.Migrations
+namespace School_VerticalSlice.Migrations
 {
     /// <inheritdoc />
     public partial class clearDayOfWeek : Migration

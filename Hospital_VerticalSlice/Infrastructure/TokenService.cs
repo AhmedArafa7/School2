@@ -3,10 +3,10 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using Hospital_VerticalSlice.Entities;
+using School_VerticalSlice.Entities;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Hospital_VerticalSlice.Infrastructure;
+namespace School_VerticalSlice.Infrastructure;
 
 public interface ITokenService
 {

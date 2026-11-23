@@ -1,4 +1,4 @@
-﻿namespace Hospital_VerticalSlice.Entities
+﻿namespace School_VerticalSlice.Entities
 {
     public class Question : BaseEntity
     {

@@ -1,9 +1,9 @@
-﻿using Hospital_VerticalSlice.Features.Auth;
+﻿using School_VerticalSlice.Features.Auth;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Hospital_VerticalSlice.Controllers
+namespace School_VerticalSlice.Controllers
 {
     public class AuthController : ApiBaseController
     {

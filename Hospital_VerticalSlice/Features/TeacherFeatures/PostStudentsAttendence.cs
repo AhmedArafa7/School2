@@ -1,15 +1,15 @@
 ﻿using Azure.Core;
 using FluentValidation;
-using Hospital_VerticalSlice.Entities;
-using Hospital_VerticalSlice.Entities.Enum;
-using Hospital_VerticalSlice.Infrastructure;
-using Hospital_VerticalSlice.Infrastructure.Services;
-using Hospital_VerticalSlice.Shared;
+using School_VerticalSlice.Entities;
+using School_VerticalSlice.Entities.Enum;
+using School_VerticalSlice.Infrastructure;
+using School_VerticalSlice.Infrastructure.Services;
+using School_VerticalSlice.Shared;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 
-namespace Hospital_VerticalSlice.Features.TeacherFeatures
+namespace School_VerticalSlice.Features.TeacherFeatures
 {
     public record PostStudentsAttendenceCommand(
         int ClassId,
@@ -53,17 +53,16 @@ namespace Hospital_VerticalSlice.Features.TeacherFeatures
         public async Task<Result<string>> Handle(PostStudentsAttendenceCommand request, CancellationToken cancellationToken)
         {
             var currentUserId = _currentUser.UserId;
-            var toDay = DateTime.UtcNow.Date;          // pack it after testing
             var Isautherized = await _context.Sessions
                 .AsNoTracking()
                 .Where(s => s.Id == request.SessionId
-                                            //&& s.Day == request.Day
+                                            //&& s.Day == request.Day               // pack it after testing
                                             )
                 .AnyAsync(s=>s.TeacherId == currentUserId);
             if (!Isautherized)
                 return Error.Unauthorized("unauthorize request", $"You are unauthorized on that class");
 
-            var classstudents = await _context.Classes
+            var classStudents = await _context.Classes
                 .AsNoTracking()
                 .Where(c => c.Id == request.ClassId)
                 .SelectMany(c => c.Students)
@@ -72,7 +71,7 @@ namespace Hospital_VerticalSlice.Features.TeacherFeatures
 
             foreach (var student in request.studentsIds)
             {
-                if(!classstudents.Contains(student))
+                if(!classStudents.Contains(student))
                 {
                     return Error.Validation("Invalid student ID", $"Student with ID {student} is not in the specified class.");
                 }
@@ -81,10 +80,10 @@ namespace Hospital_VerticalSlice.Features.TeacherFeatures
             var IsAttendExist = await _context.Attendances
                 .AsNoTracking()
                 .Where(s => s.Session.Id == request.SessionId
-                                && s.CreatedAt.Date == request.toDay)
+                                && s.CreatedAt.Date == request.toDay.Date)
                 .Select(s=> new {
-                    studentId = s.Student.Id,
-                    sessionId = s.Session.Id
+                    studentId = s.StudentId,
+                    sessionId = s.StudentId
                 })
                 .ToListAsync();
 
@@ -93,19 +92,15 @@ namespace Hospital_VerticalSlice.Features.TeacherFeatures
 
             var studentAttendence = new Attendance();
             bool IsChanged = false;
-            foreach (var student in request.studentsIds)
+            foreach (var student in classStudents)
             {
-                if(IsAttendExist.Select(s=>s.studentId).Contains(student))
-                {
-                    return Error.Conflict($"That student {student} got his attendence already");
-                }
-                studentAttendence = new Attendance
-                {
-                    StudentId = student,
-                    SessionId = request.SessionId,
-                    IsAttended = true
-                };
-                IsChanged = true;
+                 studentAttendence = new Attendance
+                 {
+                     StudentId = student,
+                     SessionId = request.SessionId,
+                     IsAttended = request.studentsIds.Contains(student)
+                 };
+  
                 _context.Add(studentAttendence);
             }
 

@@ -1,15 +1,15 @@
 ﻿using Azure.Core;
 using FluentValidation;
-using Hospital_VerticalSlice.Entities;
-using Hospital_VerticalSlice.Entities.Enum;
-using Hospital_VerticalSlice.Entities.Enum.Flags;
-using Hospital_VerticalSlice.Infrastructure;
-using Hospital_VerticalSlice.Infrastructure.Services;
-using Hospital_VerticalSlice.Shared;
+using School_VerticalSlice.Entities;
+using School_VerticalSlice.Entities.Enum;
+using School_VerticalSlice.Entities.Enum.Flags;
+using School_VerticalSlice.Infrastructure;
+using School_VerticalSlice.Infrastructure.Services;
+using School_VerticalSlice.Shared;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Hospital_VerticalSlice.Features.Admin
+namespace School_VerticalSlice.Features.Admin
 {
     public record UpdateTeacherCommand(
         int Id,
@@ -29,7 +29,8 @@ namespace Hospital_VerticalSlice.Features.Admin
                 .WithMessage("ID is required.");
             RuleFor(x => x.Phone)
                 .Matches(@"^01[0125][0-9]{8}$")
-                .WithMessage("Invalid phone number.");
+                .WithMessage("Invalid phone number.")
+                .When(x => x.Phone != null);
             RuleFor(x => x.Levels)
                 .IsInEnum()
                 .WithMessage("Invalid Level");
@@ -48,10 +49,12 @@ namespace Hospital_VerticalSlice.Features.Admin
 
         public async Task<Result<List<TeacherResponce>>> Handle(UpdateTeacherCommand request, CancellationToken cancellationToken)
         {
-            var teacher = await _context.Teachers
-                .Include(t => t.User)
-                .FirstOrDefaultAsync(t => t.Id == request.Id, cancellationToken);
+            var teacherQuery = _context.Teachers.AsQueryable();
 
+            if(request.Name != null || request.Gender.HasValue || request.Phone != null)
+            teacherQuery = teacherQuery.Include(t => t.User);
+
+            var teacher = await teacherQuery.FirstOrDefaultAsync(t => t.Id == request.Id, cancellationToken);
             if (teacher == null)
                 return Error.NotFound("Teacher", "Teacher not found.");
             bool IsChanged = false;

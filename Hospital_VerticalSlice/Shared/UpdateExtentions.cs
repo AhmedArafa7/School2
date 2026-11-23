@@ -1,4 +1,4 @@
-﻿namespace Hospital_VerticalSlice.Shared
+﻿namespace School_VerticalSlice.Shared
 {
     public static class UpdateExtentions
     {

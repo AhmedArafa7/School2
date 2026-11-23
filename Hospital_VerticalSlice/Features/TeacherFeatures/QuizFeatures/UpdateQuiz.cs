@@ -1,14 +1,14 @@
 ﻿using FluentValidation;
-using Hospital_VerticalSlice.Entities;
-using Hospital_VerticalSlice.Entities.Enum;
-using Hospital_VerticalSlice.Features.Admin;
-using Hospital_VerticalSlice.Infrastructure;
-using Hospital_VerticalSlice.Infrastructure.Services;
-using Hospital_VerticalSlice.Shared;
+using School_VerticalSlice.Entities;
+using School_VerticalSlice.Entities.Enum;
+using School_VerticalSlice.Features.Admin;
+using School_VerticalSlice.Infrastructure;
+using School_VerticalSlice.Infrastructure.Services;
+using School_VerticalSlice.Shared;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Hospital_VerticalSlice.Features.TeacherFeatures.QuizFeatures
+namespace School_VerticalSlice.Features.TeacherFeatures.QuizFeatures
 {
 
     public record UpdateQuizCommand(
@@ -87,36 +87,29 @@ namespace Hospital_VerticalSlice.Features.TeacherFeatures.QuizFeatures
                 quiz.Title = request.Title;
                 isChanged = true;
             }
-
-            // 2. تحديث Subject
             if (request.Subject.HasValue && quiz.Subject != request.Subject.Value)
             {
                 quiz.Subject = request.Subject.Value;
                 isChanged = true;
             }
-
-            // 3. تحديث Starttime
             if (request.Starttime.HasValue && quiz.Starttime != request.Starttime.Value)
             {
                 quiz.Starttime = request.Starttime.Value;
                 isChanged = true;
             }
 
-            // 4. تحديث Endtime
             if (request.Endtime.HasValue && quiz.Endtime != request.Endtime.Value)
             {
                 quiz.Endtime = request.Endtime.Value;
                 isChanged = true;
             }
 
-            // 5. تحديث Duration
             if (request.Duration.HasValue && quiz.Duration != request.Duration.Value)
             {
                 quiz.Duration = request.Duration.Value;
                 isChanged = true;
             }
 
-            // 6. تحديث الفصول المرتبطة (AccessedClassIds)
             if (request.AccessedClassIds != null && request.AccessedClassIds.Any())
             {
                 var newClassesQuery = _context.Classes
@@ -138,10 +131,8 @@ namespace Hospital_VerticalSlice.Features.TeacherFeatures.QuizFeatures
                 }
             }
 
-            // 7. تحديث الأسئلة (QuestionComm)
             if (request.QuestionComm != null && request.QuestionComm.Any())
             {
-                // مسح الأسئلة القديمة وإضافة الجديدة
                 _context.Questions.RemoveRange(quiz.Question);
 
                 quiz.Question = request.QuestionComm.Select(q => new Question
@@ -156,12 +147,10 @@ namespace Hospital_VerticalSlice.Features.TeacherFeatures.QuizFeatures
                 isChanged = true;
             }
 
-            // إذا لم يتم إرسال أي تعديلات حقيقية
             if (!isChanged)
             {
                 return Error.Validation("There is nothing changed.");
             }
-
 
             await _context.SaveChangesAsync();
             return "update done";

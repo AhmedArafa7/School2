@@ -1,10 +1,10 @@
-﻿using Hospital_VerticalSlice.Entities.Enum;
+﻿using School_VerticalSlice.Entities.Enum;
 
-namespace Hospital_VerticalSlice.Entities
+namespace School_VerticalSlice.Entities
 {
     public class Session : BaseEntity
     {
-        public Enum.SessionEnum SessionNumber { get; set; }
+        public SessionEnum SessionNumber { get; set; }
         public DayOfWeek Day { get; set; }
         public Subject Subjects { get; set; }
 

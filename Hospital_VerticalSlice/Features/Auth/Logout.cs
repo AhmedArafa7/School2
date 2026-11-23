@@ -1,10 +1,10 @@
-﻿using Hospital_VerticalSlice.Entities;
-using Hospital_VerticalSlice.Infrastructure;
-using Hospital_VerticalSlice.Shared;
+﻿using School_VerticalSlice.Entities;
+using School_VerticalSlice.Infrastructure;
+using School_VerticalSlice.Shared;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Hospital_VerticalSlice.Features.Auth
+namespace School_VerticalSlice.Features.Auth
 {
     public record LogoutCommand(string? RefreshToken) : IRequest<Result<string>>;
 

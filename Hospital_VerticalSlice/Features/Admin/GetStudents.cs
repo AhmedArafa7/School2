@@ -1,16 +1,17 @@
-﻿using Hospital_VerticalSlice.Entities.Enum;
-using Hospital_VerticalSlice.Infrastructure;
-using Hospital_VerticalSlice.Shared;
+﻿using School_VerticalSlice.Entities.Enum;
+using School_VerticalSlice.Infrastructure;
+using School_VerticalSlice.Shared;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Hospital_VerticalSlice.Features.Admin
+namespace School_VerticalSlice.Features.Admin
 {
     public record StudentResponce(
         int Id,
         string Name,
         string Email,
         Level Level,
+        Building? Building,
         ClassEnum? Class,
         string? Phone,
         bool? Gender
@@ -39,6 +40,7 @@ namespace Hospital_VerticalSlice.Features.Admin
                     Name:  t.User.Name,
                     Email: t.User.Email,
                     Level: t.Class != null ? t.Class.Level : Level.None,
+                    Building: t.Class != null ? t.Class.Building : Building.None,
                     Class: t.Class != null ? t.Class.ClassCode : ClassEnum.None,
                     Phone:  t.User.Phone,
                     Gender:  t.User.Gender

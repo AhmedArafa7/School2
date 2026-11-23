@@ -1,9 +1,9 @@
 ﻿using FluentValidation;
-using Hospital_VerticalSlice.Shared;
+using School_VerticalSlice.Shared;
 using MediatR;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Hospital_VerticalSlice.Infrastructure.Behaviors
+namespace School_VerticalSlice.Infrastructure.Behaviors
 {
     public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : notnull
     {

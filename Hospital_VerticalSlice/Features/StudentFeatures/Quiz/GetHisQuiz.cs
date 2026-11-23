@@ -1,10 +1,10 @@
-﻿using Hospital_VerticalSlice.Infrastructure;
-using Hospital_VerticalSlice.Infrastructure.Services;
-using Hospital_VerticalSlice.Shared;
+﻿using School_VerticalSlice.Infrastructure;
+using School_VerticalSlice.Infrastructure.Services;
+using School_VerticalSlice.Shared;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Hospital_VerticalSlice.Features.StudentFeatures.Quiz
+namespace School_VerticalSlice.Features.StudentFeatures.Quiz
 {
     public record GetHisQuizResponce(
         string Question,

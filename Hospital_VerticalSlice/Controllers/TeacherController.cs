@@ -1,12 +1,12 @@
-﻿using Hospital_VerticalSlice.Entities;
-using Hospital_VerticalSlice.Features.Admin.ScheduleFeatures;
-using Hospital_VerticalSlice.Features.TeacherFeatures;
-using Hospital_VerticalSlice.Features.TeacherFeatures.QuizFeatures;
+﻿using School_VerticalSlice.Entities;
+using School_VerticalSlice.Features.Admin.ScheduleFeatures;
+using School_VerticalSlice.Features.TeacherFeatures;
+using School_VerticalSlice.Features.TeacherFeatures.QuizFeatures;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Hospital_VerticalSlice.Controllers
+namespace School_VerticalSlice.Controllers
 {
     [Authorize(Roles = "Teacher")]
     public class TeacherController : ApiBaseController
@@ -22,10 +22,10 @@ namespace Hospital_VerticalSlice.Controllers
             var result = await _mediator.Send(new GetHisScheduleCommand());
             return HandleResult(result);
         }
-        [HttpGet("GetHisClassStudents")]
-        public async Task<ActionResult> GetHisClassStudents([FromBody] GetHisClassStudentsCommand command)
+        [HttpGet("GetHisClassStudents/{ClassId}")]
+        public async Task<ActionResult> GetHisClassStudents(int ClassId)
         {
-            var result = await _mediator.Send(command);
+            var result = await _mediator.Send(new GetHisClassStudentsCommand(ClassId));
             return HandleResult(result);
         }
         [HttpPost("PostStudentsAttendence")]
@@ -34,16 +34,16 @@ namespace Hospital_VerticalSlice.Controllers
             var result = await _mediator.Send(command);
             return HandleResult(result);
         }
-        [HttpGet("GetClassesAttendance")]
-        public async Task<ActionResult> GetClassesAttendance([FromBody] GetClassesAttendanceCommand command)
+        [HttpGet("GetSessionAttendance/{SessionId}")]
+        public async Task<ActionResult> GetSessionAttendance(int SessionId)
         {
-            var result = await _mediator.Send(command);
+            var result = await _mediator.Send(new GetSessionAttendanceCommand(SessionId));
             return HandleResult(result);
         }
-        [HttpGet("GetStudentAttendance")]
-        public async Task<ActionResult> GetStudentAttendance([FromBody] GetStudentAttendanceCommand command)
+        [HttpGet("GetStudentAttendance/{StudentId}")]
+        public async Task<ActionResult> GetStudentAttendance(int StudentId)
         {
-            var result = await _mediator.Send(command);
+            var result = await _mediator.Send(new GetStudentAttendanceCommand(StudentId));
             return HandleResult(result);
         }
         [HttpPut("PutSpecificAttendance")]

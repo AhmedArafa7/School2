@@ -1,7 +1,7 @@
-﻿using Hospital_VerticalSlice.Entities.Enum;
-using Hospital_VerticalSlice.Entities.Enum.Flags;
+﻿using School_VerticalSlice.Entities.Enum;
+using School_VerticalSlice.Entities.Enum.Flags;
 
-namespace Hospital_VerticalSlice.Entities
+namespace School_VerticalSlice.Entities
 {
     public class Teacher
     {

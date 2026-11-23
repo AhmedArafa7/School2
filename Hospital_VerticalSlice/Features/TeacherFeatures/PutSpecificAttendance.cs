@@ -1,13 +1,13 @@
-﻿using Hospital_VerticalSlice.Entities;
-using Hospital_VerticalSlice.Entities.Enum;
-using Hospital_VerticalSlice.Features.Admin;
-using Hospital_VerticalSlice.Infrastructure;
-using Hospital_VerticalSlice.Infrastructure.Services;
-using Hospital_VerticalSlice.Shared;
+﻿using School_VerticalSlice.Entities;
+using School_VerticalSlice.Entities.Enum;
+using School_VerticalSlice.Features.Admin;
+using School_VerticalSlice.Infrastructure;
+using School_VerticalSlice.Infrastructure.Services;
+using School_VerticalSlice.Shared;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Hospital_VerticalSlice.Features.TeacherFeatures
+namespace School_VerticalSlice.Features.TeacherFeatures
 {
 
     public record PutSpecificAttendanceCommand(int StudentId, int SessionId, bool status) : IRequest<Result<string>>;
@@ -27,19 +27,15 @@ namespace Hospital_VerticalSlice.Features.TeacherFeatures
             var currentUserId = _currentUser.UserId;
             var autherized = await _context.Sessions
                 .AsNoTracking()
-                .Where(s=>s.TeacherId == currentUserId)
-                .AnyAsync(s => s.Attendances.Any(a=>a.StudentId == request.StudentId));
+                .AnyAsync(s => s.Id == request.SessionId
+                            && s.TeacherId == currentUserId);
             if (!autherized)
                 return Error.Unauthorized("You are not authorized to access this session's attendance."); // look again
 
-            //var status = await _context.Sessions
-            //    .AsNoTracking()
-            //    .Where(s => s.TeacherId == currentUserId 
-            //             && s.Attendances.Any(a => a.StudentId == request.StudentId))
-            //    .SelectMany(s=>s.Attendances)
-            //    .FirstOrDefaultAsync();
+
             var status = await _context.Attendances
-                .Where(a => a.SessionId == request.SessionId)
+                .Where(a => a.SessionId == request.SessionId
+                         && a.StudentId == request.StudentId)
                 .FirstOrDefaultAsync();
 
             if (status == null)
@@ -48,7 +44,7 @@ namespace Hospital_VerticalSlice.Features.TeacherFeatures
 
             if (status?.IsAttended != request.status)
             {
-                status?.IsAttended = request.status;
+                status.IsAttended = request.status;
             }
             else
             {

@@ -1,8 +1,8 @@
-﻿using Hospital_VerticalSlice.Shared;
+﻿using School_VerticalSlice.Shared;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace Hospital_VerticalSlice.Controllers
+namespace School_VerticalSlice.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

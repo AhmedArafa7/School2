@@ -1,4 +1,4 @@
-﻿namespace Hospital_VerticalSlice.Entities.Enum.Flags
+﻿namespace School_VerticalSlice.Entities.Enum.Flags
 {
     [Flags]
     public enum Subjects

@@ -1,10 +1,10 @@
-﻿using Hospital_VerticalSlice.Entities;
+﻿using School_VerticalSlice.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
-namespace Hospital_VerticalSlice.Infrastructure
+namespace School_VerticalSlice.Infrastructure
 {
     public class ApplicationDbContext : DbContext
     {

@@ -1,12 +1,12 @@
 ﻿using Azure.Core;
-using Hospital_VerticalSlice.Entities;
-using Hospital_VerticalSlice.Features.Admin;
-using Hospital_VerticalSlice.Features.Admin.ScheduleFeatures;
+using School_VerticalSlice.Entities;
+using School_VerticalSlice.Features.Admin;
+using School_VerticalSlice.Features.Admin.ScheduleFeatures;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Hospital_VerticalSlice.Controllers
+namespace School_VerticalSlice.Controllers
 {
     [Authorize(Roles = "Admin")]
     public class AdminController : ApiBaseController
@@ -81,8 +81,9 @@ namespace Hospital_VerticalSlice.Controllers
                     Name: request.Name,
                     Gender: request.Gender,
                     Phone: request.Phone,
-                    Class: request.Class,
-                    Level: request.Level
+                    Level: request.Level,
+                    Building: request.Building,
+                    Class: request.Class
             );
             var result = await _mediator.Send(command);
             return HandleResult(result);

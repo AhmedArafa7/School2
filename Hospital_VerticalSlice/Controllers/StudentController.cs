@@ -1,11 +1,11 @@
-﻿using Hospital_VerticalSlice.Entities.Enum;
-using Hospital_VerticalSlice.Features.StudentFeatures;
-using Hospital_VerticalSlice.Features.StudentFeatures.Quiz;
+﻿using School_VerticalSlice.Entities.Enum;
+using School_VerticalSlice.Features.StudentFeatures;
+using School_VerticalSlice.Features.StudentFeatures.Quiz;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Hospital_VerticalSlice.Controllers
+namespace School_VerticalSlice.Controllers
 {
     [Authorize(Roles = "Student")]
     public class StudentController : ApiBaseController

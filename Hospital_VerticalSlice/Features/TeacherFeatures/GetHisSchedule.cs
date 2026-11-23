@@ -1,13 +1,14 @@
-﻿using Hospital_VerticalSlice.Entities;
-using Hospital_VerticalSlice.Entities.Enum;
-using Hospital_VerticalSlice.Features.Admin;
-using Hospital_VerticalSlice.Infrastructure;
-using Hospital_VerticalSlice.Infrastructure.Services;
-using Hospital_VerticalSlice.Shared;
+﻿using School_VerticalSlice.Entities;
+using School_VerticalSlice.Entities.Enum;
+using School_VerticalSlice.Features.Admin;
+using School_VerticalSlice.Infrastructure;
+using School_VerticalSlice.Infrastructure.Services;
+using School_VerticalSlice.Shared;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using static System.Collections.Specialized.BitVector32;
 
-namespace Hospital_VerticalSlice.Features.TeacherFeatures
+namespace School_VerticalSlice.Features.TeacherFeatures
 {
     public record TeacherScheduleResponse(
         List<TeacherDaySchedule> TeacherSchedule
@@ -20,8 +21,8 @@ namespace Hospital_VerticalSlice.Features.TeacherFeatures
 
     public record TeacherSessionDetail(
         int SessionId,
-        int? ClassId,
-        Entities.Enum.SessionEnum Session,
+        int ClassId,
+        SessionEnum Session,
         Building Building,
         Level Level,
         ClassEnum Class,
@@ -44,28 +45,34 @@ namespace Hospital_VerticalSlice.Features.TeacherFeatures
         {
             var RequeredDays = Enum.GetValues<DayOfWeek>().ToList();
             var currentUserId = _currentUser.UserId;
-            var schedulesQuery = _context.Schedules
+            var schedulesQuery = _context.Sessions
                 .AsNoTracking()
-                .Where(s => s.Sessions.Any(t => t.Teacher.Id == currentUserId))
-                .SelectMany(s => s.Sessions, (schedule, teacher) => new //look to useing (schedule, teacher) again
+                .Where(s => s.TeacherId == currentUserId)
+                .Select(session => new 
                 {
-                    schedule.Sessions,
-                    Class = schedule.Classes
+                    session,
+                    Class = session.Schedule.Classes
                 });
 
             var teacherSchedules = await schedulesQuery.ToListAsync(cancellationToken);
 
+            var uniqueSessions = teacherSchedules
+                  .GroupBy(x => x.session.Id)
+                  .Select(g => g.First())
+                  .ToList();
+
             var teacherScheduleList = RequeredDays.Select(day => new TeacherDaySchedule(
                         Day: day,
-                        Sessions: teacherSchedules
-                            .SelectMany(s => s.Sessions.Where(sess=> sess.Day == day), (s, sess) => new TeacherSessionDetail(
-                                SessionId: sess.Id,
-                                ClassId: s.Class?.Id ?? null,
-                                Session: sess.SessionNumber,
+                        Sessions: uniqueSessions
+                            .Where(s=>s.session.Day == day)
+                            .Select(s => new TeacherSessionDetail(
+                                SessionId: s.session.Id,
+                                ClassId: s.Class.Id,
+                                Session: s.session.SessionNumber,
                                 Building: s.Class?.Building ?? Building.None,
                                 Level: s.Class?.Level ?? Level.None,
                                 Class: s.Class?.ClassCode ?? ClassEnum.None,
-                                Subject: sess.Subjects
+                                Subject: s.session.Subjects
                             ))
                             .OrderBy(ds => ds.Session)
                             .ToList()

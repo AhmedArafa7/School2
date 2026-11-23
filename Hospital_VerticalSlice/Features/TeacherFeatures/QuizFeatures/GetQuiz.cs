@@ -1,15 +1,15 @@
 ﻿using Azure.Core;
 using FluentValidation;
-using Hospital_VerticalSlice.Entities;
-using Hospital_VerticalSlice.Entities.Enum;
-using Hospital_VerticalSlice.Infrastructure;
-using Hospital_VerticalSlice.Infrastructure.Services;
-using Hospital_VerticalSlice.Shared;
+using School_VerticalSlice.Entities;
+using School_VerticalSlice.Entities.Enum;
+using School_VerticalSlice.Infrastructure;
+using School_VerticalSlice.Infrastructure.Services;
+using School_VerticalSlice.Shared;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 
-namespace Hospital_VerticalSlice.Features.TeacherFeatures.QuizFeatures
+namespace School_VerticalSlice.Features.TeacherFeatures.QuizFeatures
 {
     public record GetQuizResponce(
         string Title,

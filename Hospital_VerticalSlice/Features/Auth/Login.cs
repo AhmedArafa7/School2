@@ -1,8 +1,8 @@
 ﻿using Azure.Core;
 using FluentValidation;
-using Hospital_VerticalSlice.Entities;
-using Hospital_VerticalSlice.Infrastructure;
-using Hospital_VerticalSlice.Shared;
+using School_VerticalSlice.Entities;
+using School_VerticalSlice.Infrastructure;
+using School_VerticalSlice.Shared;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -12,7 +12,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Hospital_VerticalSlice.Features.Auth
+namespace School_VerticalSlice.Features.Auth
 {
     public record LoginResponse(string AccessToken, string RefreshToken, string Role, string Name);
     public class LoginCommand : IRequest<Result<LoginResponse>>

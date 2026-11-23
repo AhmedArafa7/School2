@@ -1,6 +1,6 @@
-﻿using Hospital_VerticalSlice.Entities.Enum;
+﻿using School_VerticalSlice.Entities.Enum;
 
-namespace Hospital_VerticalSlice.Entities
+namespace School_VerticalSlice.Entities
 {
     public class StudentQuiz : BaseEntity
     {

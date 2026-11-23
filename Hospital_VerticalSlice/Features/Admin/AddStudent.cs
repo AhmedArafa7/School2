@@ -1,14 +1,14 @@
 ﻿using Azure.Core;
 using FluentValidation;
-using Hospital_VerticalSlice.Entities;
-using Hospital_VerticalSlice.Entities.Enum;
-using Hospital_VerticalSlice.Infrastructure;
-using Hospital_VerticalSlice.Infrastructure.Services;
-using Hospital_VerticalSlice.Shared;
+using School_VerticalSlice.Entities;
+using School_VerticalSlice.Entities.Enum;
+using School_VerticalSlice.Infrastructure;
+using School_VerticalSlice.Infrastructure.Services;
+using School_VerticalSlice.Shared;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Hospital_VerticalSlice.Features.Admin
+namespace School_VerticalSlice.Features.Admin
 {
     public record AddStudentCommand(
         string Name,
@@ -17,8 +17,8 @@ namespace Hospital_VerticalSlice.Features.Admin
         bool? Gender,
         string? Phone,
         Level? Level,
-        ClassEnum? Class,
-        Building? Building
+        Building? Building,
+        ClassEnum? Class
         ) : IRequest<Result<List<StudentResponce>>>;
     public class AddStudentValidator : AbstractValidator<AddStudentCommand>
     {
@@ -49,6 +49,12 @@ namespace Hospital_VerticalSlice.Features.Admin
 
         public async Task<Result<List<StudentResponce>>> Handle(AddStudentCommand request, CancellationToken cancellationToken)
         {
+            bool anyClassField = request.Building.HasValue || request.Class.HasValue || request.Level.HasValue;
+            bool allClassFields = request.Building.HasValue && request.Class.HasValue && request.Level.HasValue;
+
+            if (anyClassField && !allClassFields)
+                return Error.Validation("Class.Incomplete", "You should enter building, class, and level together.");
+
             var IsEmailExist = await _context.Users
                 .AsNoTracking().AnyAsync(t => t.Email == request.Email);
 
@@ -56,15 +62,16 @@ namespace Hospital_VerticalSlice.Features.Admin
                 return Error.Conflict("User.Email", "that email is already exist !");
 
             var PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
+            var Class = await _context.Classes
+                .FirstOrDefaultAsync(c => c.Level == request.Level
+                                     && c.Building == request.Building
+                                     && c.ClassCode == request.Class);
+            if (Class == null)
+                return Error.NotFound("That class not found");
 
             var student = new Student
             {
-                Class = new Class
-                {
-                    Level = request.Level ?? Level.None,
-                    ClassCode = request.Class ?? ClassEnum.None,
-                    Building = request.Building ?? Building.None
-                },
+                Class = Class,
                 User = new User
                 {
                     Name = request.Name,
@@ -86,6 +93,7 @@ namespace Hospital_VerticalSlice.Features.Admin
                     Name: t.User.Name,
                     Email: t.User.Email,
                     Level: t.Class != null ? t.Class.Level : Level.None,
+                    Building: t.Class != null ? t.Class.Building : Building.None,
                     Class: t.Class != null ? t.Class.ClassCode : ClassEnum.None,
                     Phone: t.User.Phone,
                     Gender: t.User.Gender

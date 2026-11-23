@@ -1,20 +1,20 @@
-﻿using Hospital_VerticalSlice.Entities;
-using Hospital_VerticalSlice.Entities.Enum;
-using Hospital_VerticalSlice.Features.Admin;
-using Hospital_VerticalSlice.Infrastructure;
-using Hospital_VerticalSlice.Infrastructure.Services;
-using Hospital_VerticalSlice.Shared;
+﻿using School_VerticalSlice.Entities;
+using School_VerticalSlice.Entities.Enum;
+using School_VerticalSlice.Features.Admin;
+using School_VerticalSlice.Infrastructure;
+using School_VerticalSlice.Infrastructure.Services;
+using School_VerticalSlice.Shared;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Hospital_VerticalSlice.Features.TeacherFeatures
+namespace School_VerticalSlice.Features.TeacherFeatures
 {
     public record StudentsNamesResponse(
         int StudentId,
         string StudentName
     );
 
-    public record GetHisClassStudentsCommand(Building Building, Level Level, ClassEnum Class) : IRequest<Result<List<StudentsNamesResponse>>>;
+    public record GetHisClassStudentsCommand(int ClassId) : IRequest<Result<List<StudentsNamesResponse>>>;
 
     public class GetHisClassStudentsHandler : IRequestHandler<GetHisClassStudentsCommand, Result<List<StudentsNamesResponse>>>
     {
@@ -33,14 +33,14 @@ namespace Hospital_VerticalSlice.Features.TeacherFeatures
                 .AsNoTracking()
                 .Where(u => u.Sessions.Any(t=> t.Teacher.Id == currentUserId))
                 .Select(u => u.Classes)
-                .AnyAsync(c=> c.Building == request.Building && c.Level == request.Level && c.ClassCode == request.Class);
+                .AnyAsync(c=> c.Id == request.ClassId);
 
             if(!autherized)
                 return Error.Unauthorized("You are not authorized to access this class's students.");
 
             var schedulesQuery = _context.Classes
                 .AsNoTracking()
-                .Where(c => c.Building == request.Building && c.Level == request.Level && c.ClassCode == request.Class)
+                .Where(c => c.Id == request.ClassId)
                 .SelectMany(c => c.Students)
                 .Select(s => new StudentsNamesResponse(
                     StudentId: s.Id,

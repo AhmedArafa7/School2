@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 
-namespace Hospital_VerticalSlice.Infrastructure.Services
+namespace School_VerticalSlice.Infrastructure.Services
 {
 
         public interface ICurrentUserService

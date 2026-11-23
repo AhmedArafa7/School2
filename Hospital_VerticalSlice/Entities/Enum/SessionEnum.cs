@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace Hospital_VerticalSlice.Entities.Enum
+namespace School_VerticalSlice.Entities.Enum
 {
     public enum SessionEnum
     {

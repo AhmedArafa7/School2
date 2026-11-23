@@ -1,4 +1,4 @@
-﻿namespace Hospital_VerticalSlice.Controllers
+﻿namespace School_VerticalSlice.Controllers
 {
     public class BaseApiController
     {

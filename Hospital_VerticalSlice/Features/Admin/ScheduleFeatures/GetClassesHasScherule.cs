@@ -1,10 +1,10 @@
-﻿using Hospital_VerticalSlice.Entities.Enum;
-using Hospital_VerticalSlice.Infrastructure;
-using Hospital_VerticalSlice.Shared;
+﻿using School_VerticalSlice.Entities.Enum;
+using School_VerticalSlice.Infrastructure;
+using School_VerticalSlice.Shared;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Hospital_VerticalSlice.Features.Admin.ScheduleFeatures
+namespace School_VerticalSlice.Features.Admin.ScheduleFeatures
 {
     public record GetClassesHasScheruleResponce(
         int ScheduleId,
