@@ -1,5 +1,4 @@
-﻿using Azure.Core;
-using FluentValidation;
+﻿using FluentValidation;
 using School_VerticalSlice.Entities;
 using School_VerticalSlice.Entities.Enum;
 using School_VerticalSlice.Entities.Enum.Flags;
@@ -25,7 +24,7 @@ namespace School_VerticalSlice.Features.TeacherFeatures.QuizFeatures
     public record QuestionComm(
         string Question,
         List<string>? Choices,
-        string Answer,
+        string CorrectAnswer,
         float? Degree
         );
 
@@ -44,9 +43,9 @@ namespace School_VerticalSlice.Features.TeacherFeatures.QuizFeatures
                 q.RuleFor(q => q.Question)
                     .NotEmpty()
                     .WithMessage("Question required !");
-                q.RuleFor(q => q.Answer)
+                q.RuleFor(q => q.CorrectAnswer)
                     .NotEmpty()
-                    .WithMessage("Answer required !");
+                    .WithMessage("CorrectAnswer required !");
                 q.RuleFor(q => q.Degree)
                     .NotEmpty()
                     .WithMessage("Degree required !");
@@ -123,7 +122,7 @@ namespace School_VerticalSlice.Features.TeacherFeatures.QuizFeatures
                 {
                     question = q.Question,
                     Choices = q.Choices,
-                    Answer = q.Answer,
+                    CorrectAnswer = q.CorrectAnswer,
                     Degree = q.Degree ?? 1.00F
                 }).ToList()
             };

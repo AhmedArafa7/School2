@@ -1,5 +1,4 @@
-﻿using Azure.Core;
-using FluentValidation;
+﻿using FluentValidation;
 using School_VerticalSlice.Entities;
 using School_VerticalSlice.Entities.Enum;
 using School_VerticalSlice.Infrastructure;

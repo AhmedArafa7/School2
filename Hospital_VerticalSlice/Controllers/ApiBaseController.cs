@@ -1,6 +1,7 @@
-﻿using School_VerticalSlice.Shared;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using School_VerticalSlice.Shared;
 
 namespace School_VerticalSlice.Controllers
 {
@@ -8,10 +9,57 @@ namespace School_VerticalSlice.Controllers
     [Route("api/[controller]")]
     public class ApiBaseController : Controller
     {
+        private ISender? _sender;
+        protected ISender Sender => _sender ??= HttpContext.RequestServices.GetRequiredService<ISender>();
+
+        // 1. إرسال Request بيرجع Result<T>
+        protected async Task<ActionResult> SendAsync<TResponse>(
+            IRequest<Result<TResponse>> request,
+            CancellationToken cancellationToken = default)
+        {
+            var result = await Sender.Send(request, cancellationToken);
+            return HandleResult(result);
+        }
+
+        // 2. إرسال Request بيرجع Result بدون قيمة (204 NoContent عند النجاح)
+        protected async Task<ActionResult> SendAsync(
+            IRequest<Result> request,
+            CancellationToken cancellationToken = default)
+        {
+            var result = await Sender.Send(request, cancellationToken);
+            return HandleResult(result);
+        }
+
+        // 3. دمج Id من الـ Route مع Request من الـ Body (يرجع Result<T>)
+        protected async Task<ActionResult> SendWithIdAsync<TId, TRequest, TCommand, TResponse>(
+            TId id,
+            TRequest bodyRequest,
+            Func<TId, TRequest, TCommand> factory,
+            CancellationToken cancellationToken = default)
+            where TCommand : IRequest<Result<TResponse>>
+        {
+            var command = factory(id, bodyRequest);
+            var result = await Sender.Send(command, cancellationToken);
+            return HandleResult(result);
+        }
+
+        // 4. دمج Id من الـ Route مع Request من الـ Body (يرجع Result بدون قيمة)
+        protected async Task<ActionResult> SendWithIdAsync<TId, TRequest, TCommand>(
+            TId id,
+            TRequest bodyRequest,
+            Func<TId, TRequest, TCommand> factory,
+            CancellationToken cancellationToken = default)
+            where TCommand : IRequest<Result>
+        {
+            var command = factory(id, bodyRequest);
+            var result = await Sender.Send(command, cancellationToken);
+            return HandleResult(result);
+        }
+
         protected ActionResult HandleResult(Result result)
         {
             if (result.IsSuccess)
-                return NoContent(); 
+                return NoContent();
             else
                 return HandleProblem(result.Errors);
         }
@@ -50,6 +98,7 @@ namespace School_VerticalSlice.Controllers
                 type: error.Type.ToString(),
                 statusCode: MapErrorTypeToStatusCode(error.Type));
         }
+
         private static int MapErrorTypeToStatusCode(ErrorType errorType) => errorType switch
         {
             ErrorType.NotFound => StatusCodes.Status404NotFound,
@@ -60,13 +109,13 @@ namespace School_VerticalSlice.Controllers
             ErrorType.Failure => StatusCodes.Status500InternalServerError,
             _ => StatusCodes.Status500InternalServerError
         };
+
         private ActionResult HandleValidationProblem(IReadOnlyList<Error> errors)
         {
-            // ModelState
-            var ModelState = new ModelStateDictionary();
+            var modelState = new ModelStateDictionary();
             foreach (var error in errors)
-                ModelState.AddModelError(error.Code, error.Description);
-            return ValidationProblem(ModelState);
+                modelState.AddModelError(error.Code, error.Description);
+            return ValidationProblem(modelState);
         }
     }
 }

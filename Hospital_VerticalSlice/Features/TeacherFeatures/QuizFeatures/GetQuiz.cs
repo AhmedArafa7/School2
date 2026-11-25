@@ -1,5 +1,4 @@
-﻿using Azure.Core;
-using FluentValidation;
+﻿using FluentValidation;
 using School_VerticalSlice.Entities;
 using School_VerticalSlice.Entities.Enum;
 using School_VerticalSlice.Infrastructure;
@@ -23,7 +22,7 @@ namespace School_VerticalSlice.Features.TeacherFeatures.QuizFeatures
     public record GetQuestionResponce(
         string Question,
         List<string>? Choices,
-        string Answer,
+        string CorrectAnswer,
         float Degree
         );
     public record GetQuizCommand(
@@ -68,7 +67,7 @@ namespace School_VerticalSlice.Features.TeacherFeatures.QuizFeatures
                     QuestionResponces: q.Question.Select(qe => new GetQuestionResponce(
                                             Question: qe.question,
                                             Choices: qe.Choices,
-                                            Answer: qe.Answer,
+                                            CorrectAnswer: qe.CorrectAnswer,
                                             Degree: qe.Degree
 
                     )).ToList()

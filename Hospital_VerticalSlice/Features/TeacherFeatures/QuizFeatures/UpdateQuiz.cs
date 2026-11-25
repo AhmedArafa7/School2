@@ -26,7 +26,7 @@ namespace School_VerticalSlice.Features.TeacherFeatures.QuizFeatures
     public record UpdateQuestionComm(
         string? Question,
         List<string>? Choices,
-        string? Answer,
+        string? CorrectAnswer,
         float? Degree
         );
 
@@ -43,9 +43,9 @@ namespace School_VerticalSlice.Features.TeacherFeatures.QuizFeatures
                         .NotEmpty()
                         .WithMessage("Question text cannot be empty if questions are provided.");
 
-                    q.RuleFor(x => x.Answer)
+                    q.RuleFor(x => x.CorrectAnswer)
                         .NotEmpty()
-                        .WithMessage("Answer is required for each question.");
+                        .WithMessage("Correct Answer is required for each question.");
 
                     q.RuleFor(x => x.Degree)
                         .NotNull()
@@ -139,7 +139,7 @@ namespace School_VerticalSlice.Features.TeacherFeatures.QuizFeatures
                 {
                     question = q.Question ?? string.Empty,
                     Choices = q.Choices,
-                    Answer = q.Answer ?? string.Empty,
+                    CorrectAnswer = q.CorrectAnswer ?? string.Empty,
                     Degree = q.Degree ?? 1.00F,
                     QuizId = quiz.Id
                 }).ToList();

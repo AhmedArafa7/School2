@@ -1,5 +1,4 @@
-﻿using Azure.Core;
-using FluentValidation;
+﻿using FluentValidation;
 using School_VerticalSlice.Entities;
 using School_VerticalSlice.Entities.Enum;
 using School_VerticalSlice.Infrastructure;
@@ -90,7 +89,7 @@ namespace School_VerticalSlice.Features.TeacherFeatures
             if (IsAttendExist.Any(s=>s.sessionId == request.SessionId))
                 return Error.Conflict("That session already got his attendance");
 
-            var studentAttendence = new Attendance();
+            Attendance studentAttendence = null;
             bool IsChanged = false;
             foreach (var student in classStudents)
             {
@@ -102,6 +101,7 @@ namespace School_VerticalSlice.Features.TeacherFeatures
                  };
   
                 _context.Add(studentAttendence);
+                IsChanged = true;
             }
 
 

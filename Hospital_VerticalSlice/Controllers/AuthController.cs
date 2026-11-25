@@ -7,27 +7,15 @@ namespace School_VerticalSlice.Controllers
 {
     public class AuthController : ApiBaseController
     {
-        private readonly IMediator _mediator;
-
-        public AuthController(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
         [HttpPost("Login")]
         [AllowAnonymous]
-        public async Task<ActionResult> Login([FromBody] LoginCommand command)
+        public async Task<ActionResult> Login([FromBody] LoginCommand command, CancellationToken ct)
         {
-            var result = await _mediator.Send(command);
-            if(!result.IsSuccess)
-                return HandleResult(result);    
+            var result = await Sender.Send(command, ct);
+            if (!result.IsSuccess)
+                return HandleResult(result);
 
-            Response.Cookies.Append("refreshToken", result.Value.RefreshToken, new CookieOptions
-            {
-                HttpOnly = true,
-                Secure = true, 
-                SameSite = SameSiteMode.None,
-                Expires = DateTime.UtcNow.AddDays(7)
-            });
+            SetRefreshTokenCookie(result.Value.RefreshToken);
 
             return Ok(new
             {
@@ -38,26 +26,18 @@ namespace School_VerticalSlice.Controllers
         }
 
         [HttpPost("RefreshToken")]
-        public async Task<ActionResult> RefreshToken()
+        public async Task<ActionResult> RefreshToken(CancellationToken ct)
         {
             var refreshToken = Request.Cookies["refreshToken"];
 
             if (string.IsNullOrEmpty(refreshToken))
-            {
                 return Unauthorized(new { message = "جلسة العمل منتهية، يرجى تسجيل الدخول مجدداً." });
-            }
 
-            var result = await _mediator.Send(new RefreshTokenCommand(refreshToken));
+            var result = await Sender.Send(new RefreshTokenCommand(refreshToken), ct);
             if (!result.IsSuccess)
                 return HandleResult(result);
 
-            Response.Cookies.Append("refreshToken", result.Value.RefreshToken, new CookieOptions
-            {
-                HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.None,
-                Expires = DateTime.UtcNow.AddDays(7)
-            });
+            SetRefreshTokenCookie(result.Value.RefreshToken);
 
             return Ok(new
             {
@@ -67,14 +47,13 @@ namespace School_VerticalSlice.Controllers
             });
         }
 
-
         [HttpPost("logout")]
         [Authorize]
-        public async Task<IActionResult> Logout()
+        public async Task<IActionResult> Logout(CancellationToken ct)
         {
             var refreshToken = Request.Cookies["refreshToken"];
 
-            var result = await _mediator.Send(new LogoutCommand(refreshToken));
+            var result = await Sender.Send(new LogoutCommand(refreshToken), ct);
 
             Response.Cookies.Delete("refreshToken", new CookieOptions
             {
@@ -83,7 +62,21 @@ namespace School_VerticalSlice.Controllers
                 SameSite = SameSiteMode.Strict
             });
 
+            if (!result.IsSuccess)
+                return HandleResult(result);
+
             return Ok(new { message = result.Value });
+        }
+
+        private void SetRefreshTokenCookie(string refreshToken)
+        {
+            Response.Cookies.Append("refreshToken", refreshToken, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.None,
+                Expires = DateTime.UtcNow.AddDays(7)
+            });
         }
     }
 }

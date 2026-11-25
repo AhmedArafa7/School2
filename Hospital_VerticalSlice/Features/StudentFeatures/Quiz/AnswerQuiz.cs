@@ -40,6 +40,7 @@ namespace School_VerticalSlice.Features.StudentFeatures.Quiz
         public async Task<Result> Handle(AnswerQuizCommand request, CancellationToken cancellationToken)
         {
             var currentUserId = _currentUser.UserId;
+                                                              // add chek on each answer and add in if not exist or changed
             var questionAnswer = request.QuestionAnswers.Select(a=> new StudentAnswers
             {
                 StudentAnswer = a.Answer,

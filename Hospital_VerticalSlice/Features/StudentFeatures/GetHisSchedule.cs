@@ -48,7 +48,7 @@ namespace School_VerticalSlice.Features.StudentFeatures
             var schedulesQuery = _context.Schedules
                 .AsNoTracking()
                 .Where(s => s.Classes.Students.Any(s=>s.Id == currentUserId))
-                .Select(s => new //look to useing (schedule, teacher) again
+                .Select(s => new 
                 {
                     s.Sessions,
                     Class = s.Classes,
@@ -56,6 +56,9 @@ namespace School_VerticalSlice.Features.StudentFeatures
                 });
 
             var StudentSchedules = await schedulesQuery.ToListAsync(cancellationToken);
+
+            if (StudentSchedules == null)
+                return Error.NotFound("You didn't get a schedule yet !");
 
             var StudentScheduleList = RequeredDays.Select(day => new StudentDaySchedule(
                         Day: day,

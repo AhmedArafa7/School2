@@ -11,89 +11,51 @@ namespace School_VerticalSlice.Controllers
     [Authorize(Roles = "Teacher")]
     public class TeacherController : ApiBaseController
     {
-        private readonly IMediator _mediator;
-        public TeacherController(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
         [HttpGet("GetHisSchedule")]
-        public async Task<ActionResult> GetHisSchedule()
-        {
-            var result = await _mediator.Send(new GetHisScheduleCommand());
-            return HandleResult(result);
-        }
+        public Task<ActionResult> GetHisSchedule(CancellationToken ct)
+            => SendAsync(new GetHisScheduleCommand(), ct);
+
         [HttpGet("GetHisClassStudents/{ClassId}")]
-        public async Task<ActionResult> GetHisClassStudents(int ClassId)
-        {
-            var result = await _mediator.Send(new GetHisClassStudentsCommand(ClassId));
-            return HandleResult(result);
-        }
+        public Task<ActionResult> GetHisClassStudents(int ClassId, CancellationToken ct)
+            => SendAsync(new GetHisClassStudentsCommand(ClassId), ct);
+
         [HttpPost("PostStudentsAttendence")]
-        public async Task<ActionResult> PostStudentsAttendence([FromBody] PostStudentsAttendenceCommand command)
-        {
-            var result = await _mediator.Send(command);
-            return HandleResult(result);
-        }
+        public Task<ActionResult> PostStudentsAttendence([FromBody] PostStudentsAttendenceCommand command, CancellationToken ct)
+            => SendAsync(command, ct);
+
         [HttpGet("GetSessionAttendance/{SessionId}")]
-        public async Task<ActionResult> GetSessionAttendance(int SessionId)
-        {
-            var result = await _mediator.Send(new GetSessionAttendanceCommand(SessionId));
-            return HandleResult(result);
-        }
-        [HttpGet("GetStudentAttendance/{StudentId}")]
-        public async Task<ActionResult> GetStudentAttendance(int StudentId)
-        {
-            var result = await _mediator.Send(new GetStudentAttendanceCommand(StudentId));
-            return HandleResult(result);
-        }
+        public Task<ActionResult> GetSessionAttendance(int SessionId, CancellationToken ct)
+            => SendAsync(new GetSessionAttendanceCommand(SessionId), ct);
+
+        [HttpGet("GetStudentSessionAttendance/{StudentId}")]
+        public Task<ActionResult> GetStudentSessionAttendance(int StudentId, [FromQuery] int SessionId, CancellationToken ct)
+            => SendAsync(new GetStudentSessionAttendanceCommand(StudentId, SessionId), ct);
+
         [HttpPut("PutSpecificAttendance")]
-        public async Task<ActionResult> PutSpecificAttendance([FromBody] PutSpecificAttendanceCommand command)
-        {
-            var result = await _mediator.Send(command);
-            return HandleResult(result);
-        }
+        public Task<ActionResult> PutSpecificAttendance([FromBody] PutSpecificAttendanceCommand command, CancellationToken ct)
+            => SendAsync(command, ct);
+
         [HttpPost("CreateQuiz")]
-        public async Task<ActionResult> CreateQuiz([FromBody] CreateQuizCommand command)
-        {
-            var result = await _mediator.Send(command);
-            return HandleResult(result);
-        }
+        public Task<ActionResult> CreateQuiz([FromBody] CreateQuizCommand command, CancellationToken ct)
+            => SendAsync(command, ct);
+
         [HttpGet("GetHisQuizzes")]
-        public async Task<ActionResult> GetHisQuizzes(CancellationToken cancellationToken)
-        {
-            var result = await _mediator.Send(new GetHisQuizzesCommand(),cancellationToken);
-            return HandleResult(result);
-        }
+        public Task<ActionResult> GetHisQuizzes(CancellationToken ct)
+            => SendAsync(new GetHisQuizzesCommand(), ct);
+
         [HttpGet("GetQuiz/{QuizId}")]
-        public async Task<ActionResult> GetQuiz(int QuizId)
-        {
-            var result = await _mediator.Send(new GetQuizCommand(QuizId));
-            return HandleResult(result);
-        }
+        public Task<ActionResult> GetQuiz(int QuizId, CancellationToken ct)
+            => SendAsync(new GetQuizCommand(QuizId), ct);
+
         [HttpPut("UpdateQuiz/{QuizId}")]
-        public async Task<ActionResult> UpdateQuiz(int QuizId,[FromBody] UpdateQuizCommand request)
-        {
-            var command = new UpdateQuizCommand(
-                QuizId: QuizId,
-                Title: request.Title,
-                Subject: request.Subject,
-                AccessedClassIds: request.AccessedClassIds,
-                MyClassesOnly: request.MyClassesOnly,
-                Starttime: request.Starttime,
-                Endtime: request.Endtime,
-                Duration: request.Duration,
-                QuestionComm: request.QuestionComm
-            );
-            var result = await _mediator.Send(command);
-            return HandleResult(result);
-        }
+        public Task<ActionResult> UpdateQuiz(int QuizId, [FromBody] UpdateQuizCommand request, CancellationToken ct)
+            => SendAsync(request with { QuizId = QuizId }, ct);
 
         [HttpDelete("DeleteQuiz/{QuizId}")]
-        public async Task<ActionResult> DeleteQuiz(int QuizId)
-        {
-            var command = new DeleteQuizCommand(QuizId);
-            var result = await _mediator.Send(command);
-            return HandleResult(result);
-        }
+        public Task<ActionResult> DeleteQuiz(int QuizId, CancellationToken ct)
+            => SendAsync(new DeleteQuizCommand(QuizId), ct);
+        [HttpPost("GradeEssayAnswers")]
+        public Task<ActionResult> GradeEssayAnswers([FromBody] GradeEssayAnswersCommand command, CancellationToken ct)
+            => SendAsync(command, ct);
     }
 }

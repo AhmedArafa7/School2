@@ -1,129 +1,76 @@
-﻿using Azure.Core;
-using School_VerticalSlice.Entities;
+﻿using School_VerticalSlice.Entities;
 using School_VerticalSlice.Features.Admin;
 using School_VerticalSlice.Features.Admin.ScheduleFeatures;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using School_VerticalSlice.Features.Admin.TermStartDate;
 
 namespace School_VerticalSlice.Controllers
 {
     [Authorize(Roles = "Admin")]
     public class AdminController : ApiBaseController
     {
-        private readonly IMediator _mediator;
-
-        public AdminController(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
-
         [HttpPost("AddTeacher")]
-        public async Task<ActionResult> AddTeacher([FromBody] AddTeacherCommand command)
-        {
-            var result = await _mediator.Send(command);
-            return HandleResult(result);
-        }
+        public Task<ActionResult> AddTeacher([FromBody] AddTeacherCommand command, CancellationToken ct)
+             => SendAsync(command, ct);
 
         [HttpGet("GetTeachers")]
-        public async Task<ActionResult> GetTeachers()
-        {
-            var result = await _mediator.Send(new GetTeachersCommand());
-            return HandleResult(result);
-        }
+        public Task<ActionResult> GetTeachers(CancellationToken ct)
+            => SendAsync(new GetTeachersCommand(), ct);
 
         [HttpDelete("DeleteTeacher/{TeacherId}")]
-        public async Task<ActionResult> DeleteTeacher(int TeacherId)
-        {
-            var command = new DeleteTeacherCommand(TeacherId);
-            var result = await _mediator.Send(command);
-            return HandleResult(result);
-        }
+        public Task<ActionResult> DeleteTeacher(int TeacherId, CancellationToken ct)
+            => SendAsync(new DeleteTeacherCommand(TeacherId), ct);
+
         [HttpPut("UpdateTeacher/{TeacherId}")]
-        public async Task<ActionResult> UpdateTeacher(int TeacherId,[FromBody] UpdateTeacherCommand request)
-        {
-            var command = new UpdateTeacherCommand(
-                    Id: TeacherId,
-                    Name: request.Name,
-                    Gender: request.Gender,
-                    Phone: request.Phone,
-                    Subject: request.Subject,
-                    Levels: request.Levels,
-                    Available: request.Available
-            );
-            var result = await _mediator.Send(command);
-            return HandleResult(result);
-        }
+        public Task<ActionResult> UpdateTeacher(int TeacherId, [FromBody] UpdateTeacherCommand request, CancellationToken ct)
+            => SendAsync(request with { Id = TeacherId }, ct);
+
         [HttpPost("AddStudent")]
-        public async Task<ActionResult> AddStudent([FromBody] AddStudentCommand command)
-        {
-            var result = await _mediator.Send(command);
-            return HandleResult(result);
-        }
+        public Task<ActionResult> AddStudent([FromBody] AddStudentCommand command, CancellationToken ct)
+            => SendAsync(command, ct);
+
         [HttpGet("GetStudents")]
-        public async Task<ActionResult> GetStudents()
-        {
-            var result = await _mediator.Send(new GetStudentsCommand());
-            return HandleResult(result);
-        }
+        public Task<ActionResult> GetStudents(CancellationToken ct)
+            => SendAsync(new GetStudentsCommand(), ct);
+
         [HttpDelete("DeleteStudent/{StudentId}")]
-        public async Task<ActionResult> DeleteStudent(int StudentId)
-        {
-            var command = new DeleteStudentCommand(id: StudentId);
-            var result = await _mediator.Send(command);
-            return HandleResult(result);
-        }
+        public Task<ActionResult> DeleteStudent(int StudentId, CancellationToken ct)
+            => SendAsync(new DeleteStudentCommand(id: StudentId), ct);
+
         [HttpPut("UpdateStudent/{StudentId}")]
-        public async Task<ActionResult> UpdateStudent(int StudentId,[FromBody] UpdateStudentCommand request)
-        {
-            var command = new UpdateStudentCommand(
-                    Studentid: StudentId,
-                    Name: request.Name,
-                    Gender: request.Gender,
-                    Phone: request.Phone,
-                    Level: request.Level,
-                    Building: request.Building,
-                    Class: request.Class
-            );
-            var result = await _mediator.Send(command);
-            return HandleResult(result);
-        }
+        public Task<ActionResult> UpdateStudent(int StudentId, [FromBody] UpdateStudentCommand request, CancellationToken ct)
+            => SendAsync(request with { Studentid = StudentId }, ct);
+
         [HttpGet("GetClassesHasScherule")]
-        public async Task<ActionResult> GetClassesHasScherule([FromQuery] GetClassesHasScheruleCommand command)
-        {
-            var result = await _mediator.Send(command);
-            return HandleResult(result);
-        }
+        public Task<ActionResult> GetClassesHasScherule(CancellationToken ct)
+            => SendAsync(new GetClassesHasScheruleCommand(), ct);
+
         [HttpPost("AddFullSchedule")]
-        public async Task<ActionResult> AddFullSchedule([FromBody] AddClassScheduleCommand command)
-        {
-            var result = await _mediator.Send(command);
-            return HandleResult(result);
-        }
+        public Task<ActionResult> AddFullSchedule([FromBody] AddClassScheduleCommand command, CancellationToken ct)
+            => SendAsync(command, ct);
+
         [HttpGet("GetTeachersSchedules/{TeacherId}")]
-        public async Task<ActionResult> GetTeacherSchedule(int TeacherId)
-        {
-            var result = await _mediator.Send(new GetTeacherScheduleCommand(TeacherId));
-            return HandleResult(result);
-        }
+        public Task<ActionResult> GetTeacherSchedule(int TeacherId, CancellationToken ct)
+            => SendAsync(new GetTeacherScheduleCommand(TeacherId), ct);
+
         [HttpGet("GetClassSchedule/{ClassId}")]
-        public async Task<ActionResult> GetClassSchedule(int ClassId,[FromQuery] GetClassScheduleCommand request)
-        {
-            var command = new GetClassScheduleCommand(ClassId);
-            var result = await _mediator.Send(command);
-            return HandleResult(result);
-        }
+        public Task<ActionResult> GetClassSchedule(int ClassId, CancellationToken ct)
+            => SendAsync(new GetClassScheduleCommand(ClassId), ct);
+
         [HttpPut("UpdateSessionSchedule/{SessionId}")]
-        public async Task<ActionResult> UpdateSessionSchedule(int SessionId, [FromBody] UpdateSessionScheduleCommand request)
-        {
-            var command = new UpdateSessionScheduleCommand(
-                ScheduleId: request.ScheduleId,
-                SessionId: SessionId,
-                TeacherId: request.TeacherId,
-                Subject: request.Subject
-            );
-            var result = await _mediator.Send(command);
-            return HandleResult(result);
-        }
+        public Task<ActionResult> UpdateSessionSchedule(int SessionId, [FromBody] UpdateSessionScheduleCommand request, CancellationToken ct)
+            => SendAsync(request with { SessionId = SessionId }, ct);
+
+
+
+        [HttpGet("GetTermStartDate")]
+        public Task<ActionResult> GetTermStartDate(CancellationToken ct)
+            => SendAsync(new GetTermStartDateCommand(), ct);
+
+        [HttpPut("PutTermStartDate")]
+        public Task<ActionResult> PutTermStartDate([FromBody] PutTermStartDateCommand command, CancellationToken ct)
+            => SendAsync(command, ct);
     }
 }
