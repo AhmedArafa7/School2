@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using School_VerticalSlice.Entities;
-using School_VerticalSlice.Entities.Enum;
 using School_VerticalSlice.Infrastructure;
 using School_VerticalSlice.Infrastructure.Services;
 using School_VerticalSlice.Shared;

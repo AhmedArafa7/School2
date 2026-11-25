@@ -53,4 +53,4 @@ namespace School_VerticalSlice.Features.TeacherFeatures.QuizFeatures
             return "Quiz deleted successfully.";
         }
     }
-}
+}                    

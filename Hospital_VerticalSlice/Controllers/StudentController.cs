@@ -18,13 +18,21 @@ namespace School_VerticalSlice.Controllers
         public Task<ActionResult> GetHisQuizzes(CancellationToken ct)
             => SendAsync(new GetHisQuizzesCommand(), ct);
 
+        [HttpPost("EnterQuiz/{QuizId}")]
+        public Task<ActionResult> EnterQuiz([FromRoute] int QuizId, CancellationToken ct)
+            => SendAsync(new EnterQuizCommand(QuizId), ct);
+
         [HttpGet("GetHisQuiz/{QuizId}")]
         public Task<ActionResult> GetHisQuiz([FromRoute] int QuizId, CancellationToken ct)
             => SendAsync(new GetHisQuizCommand(QuizId), ct);
 
         [HttpPost("AnswerQuiz")]
-        public Task<ActionResult> EnterQuiz([FromBody] AnswerQuizCommand command, CancellationToken ct)
+        public Task<ActionResult> AnswerQuiz([FromBody] AnswerQuizCommand command, CancellationToken ct)
             => SendAsync(command, ct);
+
+        [HttpGet("GetQuizDegree/{QuizId}")]
+        public Task<ActionResult> GetQuizDegree([FromRoute] int QuizId, CancellationToken ct)
+            => SendAsync(new GetQuizDegreeCommand(QuizId), ct);
 
         [HttpGet("GetQuizReview/{QuizId}")]
         public Task<ActionResult> GetQuizReview([FromRoute] int QuizId, CancellationToken ct)

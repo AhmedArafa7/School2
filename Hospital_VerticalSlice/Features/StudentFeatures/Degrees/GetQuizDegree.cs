@@ -27,12 +27,15 @@ namespace School_VerticalSlice.Features.StudentFeatures
             var currentUserId = _currentUser.UserId;
             var isAutherized = await _context.Quizzes
                 .AnyAsync(q => q.Classes.Any(c => c.Students.Any(s => s.Id == currentUserId))
-                         && q.IsDeleted == true);
+                         && q.IsDeleted != true);
 
-            if (isAutherized)
+            if (!isAutherized)
                 return Error.Unauthorized("You are unauthorized to that Quiz");
 
             var quizDegree = await _context.StudentQuiz
+                .AsNoTracking()
+                .Where(sq=>sq.QuizId == request.QuizId
+                        && sq.StudentId == currentUserId)
                 .Select(sq => sq.TotalDegree)
                 .FirstOrDefaultAsync();
 

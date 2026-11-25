@@ -54,6 +54,11 @@ namespace School_VerticalSlice.Controllers
         [HttpDelete("DeleteQuiz/{QuizId}")]
         public Task<ActionResult> DeleteQuiz(int QuizId, CancellationToken ct)
             => SendAsync(new DeleteQuizCommand(QuizId), ct);
+
+        [HttpGet("GetQuizStudents/{QuizId}")]
+        public Task<ActionResult> GetQuizStudents(int QuizId, CancellationToken ct)
+            => SendAsync(new GetQuizStudentsQuery(QuizId), ct);
+
         [HttpPost("GradeEssayAnswers")]
         public Task<ActionResult> GradeEssayAnswers([FromBody] GradeEssayAnswersCommand command, CancellationToken ct)
             => SendAsync(command, ct);
