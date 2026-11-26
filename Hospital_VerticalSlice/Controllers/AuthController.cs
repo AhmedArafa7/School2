@@ -21,7 +21,7 @@ namespace School_VerticalSlice.Controllers
             {
                 accessToken = result.Value.AccessToken,
                 role = result.Value.Role,
-                Name = result.Value.Name
+                name = result.Value.Name
             });
         }
 
@@ -43,11 +43,11 @@ namespace School_VerticalSlice.Controllers
             {
                 accessToken = result.Value.AccessToken,
                 role = result.Value.Role,
-                Name = result.Value.Name
+                name = result.Value.Name
             });
         }
 
-        [HttpPost("logout")]
+        [HttpPost("Logout")]
         [Authorize]
         public async Task<IActionResult> Logout(CancellationToken ct)
         {
@@ -55,12 +55,7 @@ namespace School_VerticalSlice.Controllers
 
             var result = await Sender.Send(new LogoutCommand(refreshToken), ct);
 
-            Response.Cookies.Delete("refreshToken", new CookieOptions
-            {
-                HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.Strict
-            });
+            Response.Cookies.Delete("refreshToken", GetRefreshTokenCookieOptions());
 
             if (!result.IsSuccess)
                 return HandleResult(result);
@@ -70,13 +65,20 @@ namespace School_VerticalSlice.Controllers
 
         private void SetRefreshTokenCookie(string refreshToken)
         {
-            Response.Cookies.Append("refreshToken", refreshToken, new CookieOptions
+            var options = GetRefreshTokenCookieOptions();
+            options.Expires = DateTime.UtcNow.AddDays(7);
+            Response.Cookies.Append("refreshToken", refreshToken, options);
+        }
+
+        private CookieOptions GetRefreshTokenCookieOptions()
+        {
+            return new CookieOptions
             {
                 HttpOnly = true,
                 Secure = true,
                 SameSite = SameSiteMode.None,
-                Expires = DateTime.UtcNow.AddDays(7)
-            });
+                Path = "/"
+            };
         }
     }
 }

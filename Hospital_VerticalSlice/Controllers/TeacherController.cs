@@ -62,5 +62,9 @@ namespace School_VerticalSlice.Controllers
         [HttpPost("GradeEssayAnswers")]
         public Task<ActionResult> GradeEssayAnswers([FromBody] GradeEssayAnswersCommand command, CancellationToken ct)
             => SendAsync(command, ct);
+
+        [HttpGet("GetStudentEssayAnswers/{QuizId}/{StudentId}")]
+        public Task<ActionResult> GetStudentEssayAnswers(int QuizId,int StudentId, CancellationToken ct)
+            => SendAsync(new GetStudentEssayAnswersQuery(QuizId, StudentId), ct);
     }
 }

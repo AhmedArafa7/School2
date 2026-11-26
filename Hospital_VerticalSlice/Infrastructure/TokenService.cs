@@ -5,6 +5,7 @@ using System.Security.Cryptography;
 using System.Text;
 using School_VerticalSlice.Entities;
 using Microsoft.IdentityModel.Tokens;
+using School_VerticalSlice.Entities.Enum;
 
 namespace School_VerticalSlice.Infrastructure;
 
@@ -26,11 +27,11 @@ public class TokenService : ITokenService
     public string GenerateAccessToken(User user, int? teacherId, int? studentId)
     {
         int nameIdentifier = user.Id;
-        if (user.Role == Entities.Enum.Role.Teacher && teacherId != null)
+        if (user.Role == Role.Teacher && teacherId != null)
         {
             nameIdentifier = teacherId ?? 0;
         }
-        else if (user.Role == Entities.Enum.Role.Student && studentId != null)
+        else if (user.Role == Role.Student && studentId != null)
         {
             nameIdentifier = studentId ?? 0;
         }

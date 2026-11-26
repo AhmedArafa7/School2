@@ -24,16 +24,15 @@ namespace School_VerticalSlice
             {
                 options.AddPolicy(corsPolicy, policy =>
                 {
-                    policy.WithOrigins("http://localhost:4200","https://hospital-client2.pages.dev")
+                    policy.WithOrigins("http://localhost:4200", "https://school-aht.pages.dev")
                           .AllowAnyHeader()
                           .AllowAnyMethod()
-                          .AllowCredentials(); // مهم لدعم Cookies والـ SignalR مستقبلاً
+                          .AllowCredentials(); 
                 });
             });
-            // Add services to the container.
 
             builder.Services.AddControllers();
-            // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+
             builder.Services.AddOpenApi();
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -80,29 +79,29 @@ namespace School_VerticalSlice
 
             var app = builder.Build();
 
-            using (var scope = app.Services.CreateScope())
-            {
-                var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-                context.Database.Migrate();
+            //using (var scope = app.Services.CreateScope())
+            //{
+            //    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            //    context.Database.Migrate();
 
-                // التأكد من عدم وجود مسجّل بهذا البريد مسبقاً
-                if (!context.Users.Any(u => u.Email == "admin@school.com"))
-                {
-                    var adminUser = new School_VerticalSlice.Entities.User // تأكد من مسار الـ Namespace الصحيح للـ User
-                    {
-                        Name = "System Admin",
-                        Email = "admin@school.com",
-                        PasswordHash = BCrypt.Net.BCrypt.HashPassword("123456"), // كلمة المرور الافتراضية
-                        Role = Role.Admin // أو الرقم المقابل لصلاحية الأدمن لديك (مثل 2 أو Admin)
-                    };
+            //    // التأكد من عدم وجود مسجّل بهذا البريد مسبقاً
+            //    if (!context.Users.Any(u => u.Email == "admin@school.com"))
+            //    {
+            //        var adminUser = new School_VerticalSlice.Entities.User // تأكد من مسار الـ Namespace الصحيح للـ User
+            //        {
+            //            Name = "System Admin",
+            //            Email = "admin@school.com",
+            //            PasswordHash = BCrypt.Net.BCrypt.HashPassword("123456"), // كلمة المرور الافتراضية
+            //            Role = Role.Admin // أو الرقم المقابل لصلاحية الأدمن لديك (مثل 2 أو Admin)
+            //        };
 
-                    context.Users.Add(adminUser);
-                    context.SaveChanges();
-                }
-            }
+            //        context.Users.Add(adminUser);
+            //        context.SaveChanges();
+            //    }
+            //}
 
             // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
+            if (app.Environment.IsDevelopment())
             {
                 app.MapOpenApi();
                 app.MapScalarApiReference(); // السطر الجديد
